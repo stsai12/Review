@@ -669,7 +669,14 @@ def retrieve_articles(params):
             return None # Or handle more gracefully
 
         if not results or "organic_results" not in results or not results["organic_results"]:
-            print("No more results found or error in API response structure.")
+            print("No 'organic_results' found in the SerpAPI response or the list is empty.")
+            if results and "error" in results:
+                print(f"SerpAPI returned an error: {results['error']}")
+            elif results:
+                print("Full SerpAPI response for debugging:")
+                print(json.dumps(results, indent=2))
+            else:
+                print("SerpAPI response was None or empty.")
             break
 
         for item in results.get("organic_results", []):
