@@ -1,7 +1,7 @@
 # main.py
 import os
 import json
-from serpapi import SerpApiClient
+from serpapi import GoogleSearch # Corrected import
 import pandas as pd
 # We will import from config.py, but it's better to handle API keys via environment variables
 # For now, we'll show how to potentially load it, but also prompt if not found.
@@ -642,7 +642,6 @@ def retrieve_articles(params):
     min_year = params['min_publication_year']
     num_articles_to_fetch = params['preferred_article_count']
 
-    client = SerpApiClient({"api_key": api_key})
     all_articles_data = []
     current_article_count = 0
     page_num = 0 # SerpAPI uses 'start' parameter, 0 for first page, 10 for second, etc.
@@ -651,6 +650,7 @@ def retrieve_articles(params):
         query_params = {
             "engine": "google_scholar",
             "q": query,
+            "api_key": api_key, # API key is part of the params for GoogleSearch
             "hl": "en",
             "num": 20, # Google Scholar max per page is 20 via SerpAPI's `num` parameter
             "start": page_num * 20, # `start` is the result offset
@@ -662,13 +662,14 @@ def retrieve_articles(params):
         print(f"Fetching page {page_num + 1} (articles {current_article_count+1} to {current_article_count + 20})...")
 
         try:
-            results = client.search(query_params)
+            search = GoogleSearch(query_params)
+            results = search.get_dict() # Get results as a dictionary
         except Exception as e:
             print(f"Error during SerpAPI call: {e}")
             return None # Or handle more gracefully
 
-        if "organic_results" not in results or not results["organic_results"]:
-            print("No more results found or error in API response.")
+        if not results or "organic_results" not in results or not results["organic_results"]:
+            print("No more results found or error in API response structure.")
             break
 
         for item in results.get("organic_results", []):
