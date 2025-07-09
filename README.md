@@ -18,13 +18,13 @@ This project is a Python-based pipeline to automatically retrieve, filter, and s
     ```bash
     pip install -r requirements.txt
     ```
-    *(requirements.txt will be created later)*
-3.  **Set up API Keys:**
-    *   **SerpAPI:** Set the `SERPAPI_API_KEY` environment variable with your SerpAPI key.
-      Alternatively, the script will prompt you for it.
+3.  **Prepare Input Data:**
+    *   You will need a JSON file containing the scholarly article data. This file should be structured like a SerpAPI Google Scholar response, where the articles are in an array under the `"organic_results"` key.
+    *   Place this file in the project root directory (e.g., as `input_articles.json`) or provide the path to the script when prompted.
+    *   Each article object in the `"organic_results"` array should ideally contain fields like `title`, `link`, `snippet`, `publication_info.summary`, and `inline_links.cited_by.total`.
     *   **Journal Impact Factors (Optional but Recommended for Filtering):**
         *   For impact factor filtering, create a CSV file named `journal_impact_factors.csv` in the root directory of this project.
-        *   The CSV file should have at least two columns: `Journal_Title` (for matching against journal names from search results) and `Impact_Factor` (the numeric impact factor).
+        *   The CSV file should have at least two columns: `Journal_Title` (for matching against journal names parsed from the JSON) and `Impact_Factor` (the numeric impact factor).
         *   An optional `ISSN` column can also be included for more accurate matching if available.
         *   Example `journal_impact_factors.csv`:
             ```csv
